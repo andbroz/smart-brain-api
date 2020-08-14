@@ -77,7 +77,10 @@ app.post('/register', (req, res) => {
 				entries: 0,
 				joined: new Date(),
 			});
-			res.json(database.users[userId - 1]);
+			const newUser = { ...database.users[userId - 1] };
+			delete newUser['password'];
+
+			res.json(newUser);
 		} else {
 			console.log('crating hash failed: ', err);
 			res.json('some error occured');
