@@ -49,12 +49,17 @@ app.get('/', (req, res) => {
 app.post('/signin', async (req, res) => {
 	const { email, password } = req.body;
 
-	const user = database.users.find(user => user.email === email);
+	const user = Object.assign(
+		{},
+		database.users.find(user => user.email === email)
+	);
 	try {
 		const match = await bcrypt.compare(password, user.password);
 
 		if (match) {
-			res.json('success');
+			delete user['password'];
+
+			res.json(user);
 		} else {
 			res.status(404).json('error logging in');
 		}
