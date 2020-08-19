@@ -2,6 +2,7 @@ const express = require('express');
 // const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt'); //https://www.npmjs.com/package/bcrypt
 const cors = require('cors'); //https://www.npmjs.com/package/cors
+const knex = require('knex');
 
 const app = express();
 
@@ -11,6 +12,19 @@ app.use(cors());
 
 const port = 3001;
 const saltRounds = 10;
+
+const db = knex({
+	client: 'pg',
+	version: '11.7',
+	connection: {
+		host: '192.168.56.101',
+		user: 'andbroz',
+		password: 'jif8grad',
+		database: 'smart-brain',
+	},
+});
+
+db.select('*').from('users');
 
 const database = {
 	users: [
