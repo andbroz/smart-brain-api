@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 // const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt'); //https://www.npmjs.com/package/bcrypt
@@ -15,12 +16,12 @@ const saltRounds = 10;
 
 const db = knex({
 	client: 'pg',
-	version: '11.7',
+	version: '12.2',
 	connection: {
-		host: '192.168.56.101',
-		user: 'andbroz',
-		password: 'jif8grad',
-		database: 'smart-brain',
+		host: process.env.DB_HOST,
+		user: process.env.DB_USER,
+		password: process.env.DB_PASS,
+		database: process.env.DB_NAME,
 	},
 });
 
