@@ -25,7 +25,11 @@ const db = knex({
 	},
 });
 
-db.select('*').from('users');
+db.select('*')
+	.from('users')
+	.then(data => {
+		console.log(data);
+	});
 
 const database = {
 	users: [
@@ -89,18 +93,26 @@ app.post('/register', (req, res) => {
 
 	bcrypt.hash(password, saltRounds, function (err, hashPassword) {
 		if (!err) {
-			const userId = database.users.push({
-				id: String(Number(database.users[database.users.length - 1].id) + 1),
-				name: name,
-				email: email,
-				password: hashPassword,
-				entries: 0,
-				joined: new Date(),
-			});
-			const newUser = { ...database.users[userId - 1] };
-			delete newUser['password'];
+			// const userId = database.users.push({
+			// 	id: String(Number(database.users[database.users.length - 1].id) + 1),
+			// 	name: name,
+			// 	email: email,
+			// 	password: hashPassword,
+			// 	entries: 0,
+			// 	joined: new Date(),
+			// });
+			// const newUser = { ...database.users[userId - 1] };
+			// delete newUser['password'];
 
-			res.json(newUser);
+			db('users')
+				.insert({
+					email: email,
+					name: name,
+					joined: new Date(),
+				})
+				.then(console.log);
+
+			res.json('user created');
 		} else {
 			console.log('crating hash failed: ', err);
 			res.json('some error occured');
