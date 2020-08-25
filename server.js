@@ -4,6 +4,7 @@ const express = require('express');
 const bcrypt = require('bcrypt'); //https://www.npmjs.com/package/bcrypt
 const cors = require('cors'); //https://www.npmjs.com/package/cors
 const knex = require('knex');
+const { response } = require('express');
 
 const app = express();
 
@@ -24,12 +25,6 @@ const db = knex({
 		database: process.env.DB_NAME,
 	},
 });
-
-db.select('*')
-	.from('users')
-	.then(data => {
-		console.log(data);
-	});
 
 const database = {
 	users: [
@@ -61,7 +56,11 @@ const database = {
 
 // main route
 app.get('/', (req, res) => {
-	res.json(database.users);
+	db.select('*')
+		.from('users')
+		.then(users => {
+			res.json(users);
+		});
 });
 
 // signin route
@@ -105,14 +104,16 @@ app.post('/register', (req, res) => {
 			// delete newUser['password'];
 
 			db('users')
+				.returning('*')
 				.insert({
 					email: email,
 					name: name,
 					joined: new Date(),
 				})
-				.then(console.log);
-
-			res.json('user created');
+				.then(user => {
+					res.json(user[0]);
+				})
+				.catch(err => res.status(400).json('unable to register'));
 		} else {
 			console.log('crating hash failed: ', err);
 			res.json('some error occured');
@@ -123,21 +124,20 @@ app.post('/register', (req, res) => {
 // user profile route
 
 app.get('/profile/:userId', (req, res) => {
-	console.log(req.params);
 	const { userId } = req.params;
-
-	let found = false;
-
-	database.users.forEach(user => {
-		if (user.id === userId) {
-			found = true;
-			return res.json(user);
-		}
-	});
-
-	if (!found) {
-		res.status(404).json('no such user');
-	}
+	db.select('*')
+		.from('users')
+		.where({
+			id: userId,
+		})
+		.then(user => {
+			if (user.length) {
+				res.json(user[0]);
+			} else {
+				res.status(404).json('Not found');
+			}
+		})
+		.catch(err => res.status(404).json('Error getting user'));
 });
 
 // image entries route
