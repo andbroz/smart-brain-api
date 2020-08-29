@@ -3,6 +3,10 @@ const saltRounds = 10;
 const handleRegister = (db, bcrypt) => (req, res) => {
 	const { email, password, name } = req.body;
 
+	if (!email || !password || !name) {
+		return res.status(400).json('That was nasty. No empty data!');
+	}
+
 	bcrypt.hash(password, saltRounds, function (err, hashPassword) {
 		if (!err) {
 			db.transaction(trx => {

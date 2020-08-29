@@ -1,5 +1,10 @@
 const handleProfileGet = db => (req, res) => {
 	const { userId } = req.params;
+
+	if (!userId) {
+		return res.status(400).json('Wrong request!');
+	}
+
 	db.select('*')
 		.from('users')
 		.where({
