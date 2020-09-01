@@ -33,7 +33,7 @@ const handleRegister = (db, bcrypt) => (req, res) => {
 					.catch(trx.rollback);
 			}).catch(err => res.status(400).json('unable to register'));
 		} else {
-			console.log('crating hash failed: ', err);
+			console.log('creating hash failed: ', err);
 			res.json('some error occured');
 		}
 	});
