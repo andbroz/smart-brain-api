@@ -1,4 +1,3 @@
-// const dotenv = require('dotenv'); //https://www.npmjs.com/package/dotenv
 const express = require('express'); //http://expressjs.com/
 const bcrypt = require('bcrypt'); //https://www.npmjs.com/package/bcrypt
 const cors = require('cors'); //https://www.npmjs.com/package/cors
@@ -7,8 +6,6 @@ const signin = require('./controllers/signin');
 const register = require('./controllers/register');
 const profile = require('./controllers/profile');
 const image = require('./controllers/image');
-
-dotenv.config();
 
 const app = express();
 
@@ -19,12 +16,9 @@ const port = process.env.PORT || 3000;
 
 const db = knex({
 	client: 'pg',
-	version: '12.2',
-	connection: {
-		host: process.env.DB_HOST,
-		user: process.env.DB_USER,
-		password: process.env.DB_PASS,
-		database: process.env.DB_NAME,
+	connectionString: process.env.DATABASE_URL,
+	ssl: {
+		rejectUnauthorized: false,
 	},
 });
 

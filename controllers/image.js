@@ -1,5 +1,4 @@
 const Clarifai = require('clarifai');
-// require('dotenv').config();
 
 // https://docs.clarifai.com/api-guide/api-overview/api-clients
 const app = new Clarifai.App({
